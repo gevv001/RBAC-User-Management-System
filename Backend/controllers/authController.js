@@ -1,4 +1,5 @@
 import AuthServices from "../services/authServices.js";
+import { sendJson } from "../utils/response.js";
 
 class AuthController {
     static async invite(req, res) {
@@ -6,9 +7,8 @@ class AuthController {
 
         const response = await AuthServices.invite(email, role);
 
-        res.status(response.status).json({ 
-            message: response.message 
-        })
+        return sendJson(res, response)
+
     }
 
     static async login(req, res) {
@@ -16,11 +16,8 @@ class AuthController {
 
         const response = await AuthServices.login(email, password);
 
-        res.status(response.status).json({
-            message: response.message,
-            token: response.token,
-            user: response.user
-        })
+        return sendJson(res, response)
+
     }
 
     static async completeRegistration(req, res) {
@@ -28,9 +25,8 @@ class AuthController {
 
         const response = await AuthServices.completeRegistration(token, password, fullName);
 
-        res.status(response.status).json({ 
-            message: response.message 
-        })
+        return sendJson(res, response)
+
     }
 
     static async forgotPassword(req, res) {
@@ -38,19 +34,26 @@ class AuthController {
 
         const response = await AuthServices.forgotPassword(email);
 
-        res.status(response.status).json({ 
-            message: response.message 
-        })
+        return sendJson(res, response)
+
     }
 
     static async resetPassword(req, res) {
-        const {token, password} = req.body;
+        const { password } = req.body;
+        const { token } = req.params;
 
         const response = await AuthServices.resetPassword(token, password);
 
-        res.status(response.status).json({ 
-            message: response.message 
-        })
+        return sendJson(res, response)
+
+    }
+
+    static async changePassword(req, res) {
+        const { currentPassword, newPassword } = req.body;
+
+        const response = await AuthServices.changePassword(currentPassword, newPassword);
+
+        return sendJson(res, response)
     }
 }
 

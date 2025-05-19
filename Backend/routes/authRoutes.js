@@ -9,6 +9,7 @@ authRoutes.post('/login', AuthController.login);
 authRoutes.post('/invite', authUser, authPermissions(PERMISSIONS.USERS_INVITE), AuthController.invite)
 authRoutes.post('/complete-registration', AuthController.completeRegistration)
 authRoutes.post('/forgot-password', AuthController.forgotPassword)
-authRoutes.post('/reset-password', AuthController.resetPassword);
+authRoutes.post('/reset-password/:token', AuthController.resetPassword);
+authRoutes.patch('/change-password', authUser, AuthController.changePassword)
 
 export default authRoutes;

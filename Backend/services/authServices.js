@@ -143,7 +143,7 @@ class AuthServices {
 
         const resetToken = generateResetToken(email);
 
-        const link = `http://localhost:${process.env.PORT}/reset-password?token=${resetToken}`;
+        const link = `http://localhost:5173/reset-password/${resetToken}`;
 
         try {
             await sendResetPassEmail(email, link)
@@ -203,7 +203,44 @@ class AuthServices {
             status: 200,
             message: "Password reset successful"
         };
+    }
 
+    static async changePassword(currentPassword, newPassword) {
+        if (!currentPassword || !newPassword) {
+            return {
+                status: 400,
+                message: "Missing fields"
+            }
+        }
+
+        const user = await UserModel.findOne({ email: req.user.email });
+
+        if (!user) {
+            return {
+                status: 404,
+                message: "No such user"
+            }
+        }
+
+
+
+        const passMatch = await bcrypt.compare(currentPassword, user.password);
+
+        if (!passMatch) {
+            return {
+                status: 401,
+                message: "Wrong current password"
+            }
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+
+        await user.save();
+
+        return {
+            status: 200,
+            message: "Password change successful"
+        }
     }
 }
 
