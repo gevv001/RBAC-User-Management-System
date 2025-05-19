@@ -21,7 +21,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Navigate to={user ? "/dashboard" : "/login"} />
+            <Navigate to={user ? "/dashboard" : "/login"} replace />
           }
         />
 

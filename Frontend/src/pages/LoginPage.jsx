@@ -25,7 +25,7 @@ function LoginPage() {
 
             setUser(res.data.user);
             localStorage.setItem("token", res.data.token);
-            navigate("/dashboard");
+            navigate("/dashboard", { replace: true });
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");
         }
