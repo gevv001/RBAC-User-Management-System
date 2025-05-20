@@ -19,8 +19,10 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 3000;
 
 connectDB();
-mongoose.connection.once('open', () => {
+mongoose.connection.once('open', async () => {
     console.log('DB connected');
+    await seedAdmin();
+
     app.listen(PORT, () => {
         console.log('Server running on port: ', PORT);
     })

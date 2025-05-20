@@ -1,44 +1,34 @@
-import mongoose from "mongoose";
+import User from "../models/User.js";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
-import UserModel from "./models/userModel.js";
-import { ROLE_PERMISSIONS, ROLES } from "./utils/permissions.js";
+import fs from "fs";
 
-dotenv.config(); // Load .env
+export async function seedAdmin() {
+  if (process.env.SEED_ADMIN !== "true") return;
 
-const createInitialAdmin = async () => {
-  try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ums", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
-
-    const existingAdmin = await UserModel.findOne({ email: "" });
-
-    if (existingAdmin) {
-      console.log("Admin user already exists.");
-      return;
-    }
-
-    const hashedPassword = await bcrypt.hash("admin123", 10);
-
-    const newAdmin = new UserModel({
-      fullName: "System Admin",
-      email: "",
-      password: hashedPassword,
-      role: ROLES.ADMIN,
-      permissions: ROLE_PERMISSIONS[ROLES.ADMIN],
-      status: "active"
-    });
-
-    await newAdmin.save();
-    console.log("✅ Admin user created successfully.");
-  } catch (error) {
-    console.error("❌ Error creating admin user:", error);
-  } finally {
-    await mongoose.disconnect();
+  const flagFile = "./admin-seeded.flag";
+  if (fs.existsSync(flagFile)) {
+    console.log("✅ Admin already seeded (flag file exists)");
+    return;
   }
-};
 
-createInitialAdmin();
+  const existing = await User.findOne({ email: process.env.ADMIN_EMAIL });
+  if (existing) {
+    console.log("⚠️ Admin user already exists.");
+    fs.writeFileSync(flagFile, "seeded");
+    return;
+  }
+
+  const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+
+  await User.create({
+    fullName: process.env.ADMIN_FULLNAME,
+    email: process.env.ADMIN_EMAIL,
+    password: hashedPassword,
+    role: "admin",
+    isRegistered: true,
+  });
+
+  fs.writeFileSync(flagFile, "seeded");
+
+  console.log("✅ Admin user created:", process.env.ADMIN_EMAIL);
+}

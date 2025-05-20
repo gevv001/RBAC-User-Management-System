@@ -70,6 +70,18 @@ EMAIL_PASS=email_pass
 JWT_TOKEN=your_token
 JWT_INVITE_TOKEN=your_invite_token
 JWT_RESET_TOKEN=your_reset_token
+
+### 🧪 Initial Admin User Setup
+
+To seed the first admin user, update your `.env` file:
+
+```env
+SEED_ADMIN=true
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
+ADMIN_FULLNAME=Super Admin
+
+
 Start the backend server
 node app.js
 
