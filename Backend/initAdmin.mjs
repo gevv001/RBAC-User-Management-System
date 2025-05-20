@@ -14,7 +14,7 @@ const createInitialAdmin = async () => {
       useUnifiedTopology: true
     });
 
-    const existingAdmin = await UserModel.findOne({ email: "gevorg.docando.1@gmail.com" });
+    const existingAdmin = await UserModel.findOne({ email: "" });
 
     if (existingAdmin) {
       console.log("Admin user already exists.");
@@ -25,7 +25,7 @@ const createInitialAdmin = async () => {
 
     const newAdmin = new UserModel({
       fullName: "System Admin",
-      email: "gevorg.docando.1@gmail.com",
+      email: "",
       password: hashedPassword,
       role: ROLES.ADMIN,
       permissions: ROLE_PERMISSIONS[ROLES.ADMIN],
