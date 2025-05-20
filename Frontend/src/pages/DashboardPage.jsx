@@ -9,12 +9,6 @@ function DashboardPage() {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        setUser(null);
-        navigate("/");
-    };
-
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -33,9 +27,7 @@ function DashboardPage() {
             }
         };
 
-        if (user?.role === "admin") {
-            fetchUsers();
-        }
+        fetchUsers();
     }, [user]);
 
     return (
@@ -46,43 +38,40 @@ function DashboardPage() {
                 <p><strong>Name:</strong> {user?.fullName}</p>
                 <p><strong>Email:</strong> {user?.email}</p>
                 <p><strong>Role:</strong> {user?.role}</p>
-                <button onClick={handleLogout} style={{ marginTop: "1rem" }}>
-                    Logout
-                </button>
             </div>
 
-            {user?.role === "admin" && (
-                <>
-                    <h2>All Users</h2>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
 
-                    <table style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        marginTop: "1rem"
-                    }}>
-                        <thead>
-                            <tr style={{ backgroundColor: "#f2f2f2" }}>
-                                <th style={thStyle}>Name</th>
-                                <th style={thStyle}>Email</th>
-                                <th style={thStyle}>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((u) => (
-                                <tr key={u._id} style={{ borderBottom: "1px solid #ccc" }}>
-                                    <td style={tdStyle}>{u.fullName}</td>
-                                    <td style={tdStyle}>{u.email}</td>
-                                    <td style={tdStyle}>{u.role}</td>
-                                    <td style={tdStyle}>
-                                        <button onClick={() => navigate(`/users/${u._id}/edit`)}>Edit</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </>
-            )}
+            <h2>All Users</h2>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <table style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                marginTop: "1rem"
+            }}>
+                <thead>
+                    <tr style={{ backgroundColor: "#f2f2f2" }}>
+                        <th style={thStyle}>Name</th>
+                        <th style={thStyle}>Email</th>
+                        <th style={thStyle}>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map((u) => (
+                        <tr key={u._id} style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={tdStyle}>{u.fullName}</td>
+                            <td style={tdStyle}>{u.email}</td>
+                            <td style={tdStyle}>{u.role}</td>
+                            {user.role === 'admin' &&
+                                <td style={tdStyle}>
+                                    <button onClick={() => navigate(`/users/${u._id}/edit`)}>Edit</button>
+                                </td>
+                            }
+
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }

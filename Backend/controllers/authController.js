@@ -50,8 +50,9 @@ class AuthController {
 
     static async changePassword(req, res) {
         const { currentPassword, newPassword } = req.body;
+        const { email } = req.user
 
-        const response = await AuthServices.changePassword(currentPassword, newPassword);
+        const response = await AuthServices.changePassword(email, currentPassword, newPassword);
 
         return sendJson(res, response)
     }

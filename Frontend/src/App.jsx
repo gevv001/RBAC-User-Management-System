@@ -1,90 +1,45 @@
-import { Routes, Route, Navigate } from "react-router-dom"
-import ProtectedRoute from "./components/ProtectedRoute"
-import PublicRoute from "./components/PublicRoute";
-import Navbar from "./components/Navbar";
-import LoginPage from "./pages/LoginPage"
-import DashboardPage from "./pages/DashboardPage"
+// src/App.jsx
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 import EditUserPage from "./pages/EditUserPage";
 import InvitePage from "./pages/InvitePage";
 import ProfilePage from "./pages/ProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import CompleteRegistrationPage from "./pages/CompleteRegistrationPage";
 import { useAuth } from "./contexts/AuthContext";
+import ProtectedLayout from "./components/ProtectedLayout";
+import PublicLayout from "./components/PublicLayout";
 
 function App() {
   const { user } = useAuth();
 
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Navigate to={user ? "/dashboard" : "/login"} replace />
-          }
-        />
+    <Routes>
+      <Route
+        path="/"
+        element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+      />
 
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
+      <Route element={<PublicLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      </Route>
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        element={user ? <ProtectedLayout /> : <Navigate to="/login" replace />}
+      >
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/users/:id/edit" element={<EditUserPage />} />
+        <Route path="/invite" element={<InvitePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Route>
+      <Route path="/complete-registration/:token" element={<CompleteRegistrationPage />} />
 
-        <Route
-          path="/users/:id/edit"
-          element={
-            <EditUserPage />
-          }
-        />
-
-        <Route
-          path="/invite"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <InvitePage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/forgot-password"
-          element={
-            <ForgotPasswordPage />
-          }
-        />
-
-        <Route
-          path="/reset-password/:token"
-          element={
-            <ResetPasswordPage />
-          }
-        />
-      </Routes>
-    </>
-
-  )
+    </Routes>
+  );
 }
 
-export default App
+export default App;

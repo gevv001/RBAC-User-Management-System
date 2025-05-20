@@ -61,7 +61,7 @@ class AuthServices {
 
         const inviteToken = generateInviteToken(email, role)
 
-        const link = `http://localhost:${process.env.PORT}/complete-registration?token=${inviteToken}`;
+        const link = `http://localhost:5173/complete-registration/${inviteToken}`;
 
         try {
             await sendInviteEmail(email, link);
@@ -205,7 +205,7 @@ class AuthServices {
         };
     }
 
-    static async changePassword(currentPassword, newPassword) {
+    static async changePassword(email, currentPassword, newPassword) {
         if (!currentPassword || !newPassword) {
             return {
                 status: 400,
@@ -213,7 +213,7 @@ class AuthServices {
             }
         }
 
-        const user = await UserModel.findOne({ email: req.user.email });
+        const user = await UserModel.findOne({ email });
 
         if (!user) {
             return {

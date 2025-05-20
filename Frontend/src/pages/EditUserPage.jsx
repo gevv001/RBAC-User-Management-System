@@ -12,10 +12,11 @@ function EditUserPage() {
         fullName: "",
         email: "",
     });
-
+    const [role, setRole] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [roleSuccess, setRoleSuccess] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -25,8 +26,9 @@ function EditUserPage() {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                const { fullName, email } = res.data.user;
+                const { fullName, email, role } = res.data.user;
                 setFormData({ fullName, email });
+                setRole(role);
                 setLoading(false);
             } catch (err) {
                 setError("Failed to load user data");
@@ -61,7 +63,7 @@ function EditUserPage() {
         }
 
         try {
-            const res = await axios.patch(`http://localhost:3000/users/${id}`, updateData, {
+            await axios.patch(`http://localhost:3000/users/${id}`, updateData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -81,9 +83,30 @@ function EditUserPage() {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            navigate("/dashboard"); 
+            navigate("/dashboard");
         } catch (err) {
             setError("Failed to delete user.");
+        }
+    };
+
+    const handleRoleUpdate = async () => {
+        setRoleSuccess("");
+        setError("");
+
+        try {
+            const token = localStorage.getItem("token");
+
+            await axios.patch(
+                `http://localhost:3000/users/${id}/role`,
+                { role },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            setRoleSuccess("Role updated successfully.");
+        } catch (err) {
+            setError(err.response?.data?.message || "Role update failed.");
         }
     };
 
@@ -94,6 +117,8 @@ function EditUserPage() {
             <h2>Edit User</h2>
             {error && <p style={{ color: "red" }}>{error}</p>}
             {success && <p style={{ color: "green" }}>{success}</p>}
+            {roleSuccess && <p style={{ color: "green" }}>{roleSuccess}</p>}
+
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Full Name</label><br />
@@ -123,6 +148,23 @@ function EditUserPage() {
                     Delete User
                 </button>
             </form>
+
+            <hr style={{ margin: "2rem 0" }} />
+
+            <div>
+                <h3>Change Role</h3>
+                <label>Role</label><br />
+                <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    style={{ marginBottom: "1rem" }}
+                >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <br />
+                <button onClick={handleRoleUpdate}>Update Role</button>
+            </div>
         </div>
     );
 }

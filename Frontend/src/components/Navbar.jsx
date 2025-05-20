@@ -11,11 +11,14 @@ function Navbar() {
         navigate("/login");
     };
 
+    if (!user) return null;
+
     return (
         <nav>
             <ul>
                 <li><Link to="/dashboard">Dashboard</Link></li>
-                <li><Link to="/invite">Invite</Link></li>
+                {user.role === 'admin' && (<li><Link to="/invite">Invite</Link></li>)
+                }
                 <li><Link to="/profile">Profile</Link></li>
                 <li>
                     <button onClick={handleLogout}>Logout</button>

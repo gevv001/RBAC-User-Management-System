@@ -20,9 +20,6 @@ function LoginPage() {
                 password,
             });
 
-            console.log(res);
-
-
             setUser(res.data.user);
             localStorage.setItem("token", res.data.token);
             navigate("/dashboard", { replace: true });

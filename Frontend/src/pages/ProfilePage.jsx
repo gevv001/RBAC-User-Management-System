@@ -9,6 +9,11 @@ function ProfilePage() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
+
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [passwordMessage, setPasswordMessage] = useState("");
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -32,22 +37,23 @@ function ProfilePage() {
             setMessage(err.response?.data?.message || "Update failed.");
         }
 
-        const handlePasswordChange = async (e) => {
-            e.preventDefault();
-            try {
-                const token = localStorage.getItem("token");
-                await axios.patch(
-                    "http://localhost:3000/auth/change-password",
-                    { currentPassword, newPassword },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setPasswordMessage("Password changed successfully");
-                setCurrentPassword("");
-                setNewPassword("");
-            } catch (err) {
-                setPasswordMessage(err.response?.data?.message || "Password change failed");
-            }
-        };
+    };
+
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem("token");
+            await axios.patch(
+                "http://localhost:3000/auth/change-password",
+                { email, currentPassword, newPassword },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setPasswordMessage("Password changed successfully");
+            setCurrentPassword("");
+            setNewPassword("");
+        } catch (err) {
+            setPasswordMessage(err.response?.data?.message || "Password change failed");
+        }
     };
 
     return (
@@ -71,15 +77,6 @@ function ProfilePage() {
                         value={fullName}
                         required
                         onChange={(e) => setFullName(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>New Password (optional)</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Leave blank to keep current"
                     />
                 </div>
                 <br />
