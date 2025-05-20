@@ -25,7 +25,7 @@ export async function seedAdmin() {
     email: process.env.ADMIN_EMAIL,
     password: hashedPassword,
     role: "admin",
-    isRegistered: true,
+    status: "active"
   });
 
   fs.writeFileSync(flagFile, "seeded");

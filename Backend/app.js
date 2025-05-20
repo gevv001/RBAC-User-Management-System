@@ -6,6 +6,7 @@ import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import usersRoutes from './routes/usersRoutes.js';
+import { seedAdmin } from './initAdmin.mjs';
 configDotenv();
 
 const app = express();
