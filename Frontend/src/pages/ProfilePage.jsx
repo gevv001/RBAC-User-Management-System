@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import UploadAvatarForm from "../components/UploadAvatarForm";
+import UserAvatar from "../components/UserAvatar";
 import axios from "axios";
 
 function ProfilePage() {
@@ -55,11 +57,14 @@ function ProfilePage() {
             setPasswordMessage(err.response?.data?.message || "Password change failed");
         }
     };
-
+    console.log(user.avatar);
+    
     return (
         <div style={{ maxWidth: 400, margin: "auto", paddingTop: "2rem" }}>
             <h2>My Profile</h2>
             {message && <p>{message}</p>}
+            <UserAvatar avatarId={user.avatar} size={120} />
+
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email</label>
@@ -82,6 +87,11 @@ function ProfilePage() {
                 <br />
                 <button type="submit">Save Changes</button>
             </form>
+            <UploadAvatarForm
+                userId={user._id}
+                currentAvatarUrl={`http://localhost:3000/photos/${user.avatar}`}
+                onUploadSuccess={() => window.location.reload()}
+            />
 
             <h3>Change Password</h3>
             {passwordMessage && <p>{passwordMessage}</p>}

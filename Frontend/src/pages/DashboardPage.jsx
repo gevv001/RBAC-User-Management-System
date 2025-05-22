@@ -1,6 +1,7 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserAvatar from "../components/UserAvatar";
 import axios from "axios";
 
 function DashboardPage() {
@@ -51,6 +52,7 @@ function DashboardPage() {
             }}>
                 <thead>
                     <tr style={{ backgroundColor: "#f2f2f2" }}>
+                        <th style={thStyle}></th>
                         <th style={thStyle}>Name</th>
                         <th style={thStyle}>Email</th>
                         <th style={thStyle}>Role</th>
@@ -59,6 +61,9 @@ function DashboardPage() {
                 <tbody>
                     {users.map((u) => (
                         <tr key={u._id} style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={tdStyle}>
+                                <UserAvatar avatarId={u.avatar} size={70} />
+                            </td>                            
                             <td style={tdStyle}>{u.fullName}</td>
                             <td style={tdStyle}>{u.email}</td>
                             <td style={tdStyle}>{u.role}</td>

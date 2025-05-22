@@ -1,5 +1,5 @@
-import PhotoModel from "../models/photoModel"
-import { isValidId } from "./userUtils";
+import PhotoModel from "../models/photoModel.js"
+import { isValidId } from "./userUtils.js";
 
 class PhotosServices {
     static async uploadPhoto(file) {
@@ -14,7 +14,8 @@ class PhotosServices {
             return {
                 status: 201,
                 message: "Photo upload successful",
-                url: `/photos/${saved._id}`
+                url: `/photos/${saved._id}`,
+                id: saved._id
             }
         } catch (error) {
             console.error(error);
@@ -35,7 +36,7 @@ class PhotosServices {
                 }
             }
 
-            const photo = PhotoModel.findById(id);
+            const photo = await PhotoModel.findById(id);
 
             if (!photo) {
                 return {
@@ -43,7 +44,7 @@ class PhotosServices {
                     message: "Photo not found"
                 }
             }
-
+            
             return {
                 status: 200,
                 contentType: photo.contentType,
