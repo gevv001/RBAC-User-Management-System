@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     enum: ["invited", "active"],
     default: "invited"
   },
+  avatar: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Photo',
+    default: null
+  }
 }, {timestamps: true});
 
 
