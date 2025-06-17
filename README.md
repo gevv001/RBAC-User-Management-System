@@ -1,152 +1,206 @@
 # RBAC User Management System
 
-A full-stack user management system implementing **Role-Based Access Control (RBAC)** using Node.js, Express, MongoDB, and React. Admins can invite users, assign roles, and manage accounts, while users can log in, complete registration, update profiles, and reset passwords.
+A full-stack Role-Based Access Control (RBAC) User Management System built with **Node.js**, **Express**, **MongoDB**, and **React**. This application allows administrators to manage users, roles, and permissions securely. It includes user authentication, registration via email invite, password reset functionality, and a simple user profile dashboard.
 
-## 🚀 Features
+## ⚙️ Features
 
-- ✅ Authentication with JWT
-- ✅ Role-based access (Admin, User, etc.)
-- ✅ Admin can:
-  - Invite users
-  - Edit user info (name, email)
-  - Change user roles
-  - Delete users
-- ✅ Users can:
-  - Complete registration from invite link
-  - Log in and reset password
-  - View and update their profile
-- ✅ Avatar upload and editing support (coming soon)
-- 🔐 Protected routes and pages based on roles
+### 🔐 Authentication & Authorization
+
+* JWT-based authentication
+* Secure password hashing with bcrypt
+* Role-based access control (RBAC)
+* Permission-based route protection
+* Invite-only registration flow
+* Password reset via email link
+
+### 👤 User Management
+
+* Admin dashboard to:
+
+  * View all users (except self)
+  * Invite new users (email, full name, role)
+  * Edit user info and role
+  * Delete users
+* Profile page for logged-in users to:
+
+  * View and edit their own profile
+  * Upload or update avatar image
+  * Change password
+
+### 📷 Avatar Support
+
+* File upload via Multer middleware
+* Images stored in MongoDB buffer
+* Default avatar fallback for users without uploads
+
+### 🧠 Tech Stack
+
+#### Backend:
+
+* Node.js
+* Express.js
+* MongoDB + Mongoose
+* JWT for authentication
+* Multer for file uploads
+* dotenv for environment configs
+* Nodemailer for emails
+
+#### Frontend:
+
+* React (JavaScript)
+* React Router v6
+* Axios for API communication
+* Pure CSS
 
 ---
 
-## 📁 Project Structure
+## 🗂 Project Structure
 
-RBAC-User-Management-System/
-│
-├── Backend/ # Express + MongoDB backend
-│ ├── controllers/
-│ ├── middlewares/
-│ ├── models/
-│ ├── routes/
-│ ├── utils/
-│ ├── config/
-  ├── services/
-│ └── app.js
-│
-├── Frontend/ # React frontend
-│ ├── src/
-│ │ ├── components/
-│ │ ├── contexts/
-│ │ ├── pages/
-│ │ └── App.jsx
-│ 
-│
-├── .gitignore
-└── README.md
+```
+Backend/
+├── controllers/
+├── routes/
+├── models/
+├── services/
+├── middlewares/
+├── utils/
+├── config/
+├── uploads/ (if storing files locally)
+├── app.js
+├── initAdmin.mjs
+├── admin-seeded.flag
+└── .env
 
-## 🛠️ Getting Started
+Frontend/src/
+├── components/
+├── pages/
+├── contexts/
+├── App.jsx
+├── App.css
+├── main.jsx
+└── index.css
+```
 
-### Prerequisites
+---
 
-- Node.js (v18+ recommended)
-- MongoDB running locally or in the cloud (e.g. MongoDB Atlas)
+## 🚀 Getting Started
 
-### Clone the repository
+### 📦 Backend Setup
 
 ```bash
-git clone https://github.com/gevv001/RBAC-User-Management-System.git
-cd RBAC-User-Management-System
-
-1️⃣ Backend Setup
-
 cd Backend
 npm install
-Create .env file in Backend/ directory:
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-EMAIL_USER=email_address
-EMAIL_PASS=email_pass 
-JWT_TOKEN=your_token
-JWT_INVITE_TOKEN=your_invite_token
-JWT_RESET_TOKEN=your_reset_token
+```
 
-### 🧪 Initial Admin User Setup
+### 📁 Environment Variables
 
-To seed the first admin user, update your `.env` file:
+Create a `.env` file inside the `Backend/` folder:
 
 ```env
-SEED_ADMIN=true
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=admin123
-ADMIN_FULLNAME=Super Admin
+PORT=3000
+MONGO_URI=your_mongodb_connection
+EMAIL_USER=email_that_sends_invitation
+EMAIL_PASS=inviter_email_password
+JWT_SECRET=your_jwt_secret
+JWT_INVITE_TOKEN=your_jwt_invite
+JWT_RESET_TOKEN=your_jwt_reset
+SEED_ADMIN=false
+ADMIN_EMAIL=first_admin_email
+ADMIN_PASSWORD=first_admin_password
+ADMIN_FULLNAME=first_admin_fullname
+```
 
+### 🔑 Seed Admin User (optional)
 
-Start the backend server
-node app.js
+```bash
+node initAdmin.mjs
+```
 
-2️⃣ Frontend Setup
+### ▶️ Run Backend
 
-cd ../Frontend
-npm install
-Start the frontend
-
+```bash
 npm run dev
-The app will be running at: http://localhost:5173
+```
 
-📦 API Overview
-Auth
+---
 
-POST /auth/invite
+### 💻 Frontend Setup
 
-POST /auth/login
+```bash
+cd Frontend
+npm install
+```
 
-POST /auth/forgot-password
+### ▶️ Run Frontend
 
-PATCH /auth/reset-password/:token
+```bash
+npm start
+```
 
-PATCH /auth/complete-registration/:token
+---
 
-Users
+## 📮 API Endpoints
 
-GET /users
+### Authentication
 
-GET /users/:id 
+* `POST /auth/login`
+* `POST /auth/invite`
+* `POST /auth/complete-registration`
+* `POST /auth/forgot-password`
+* `POST /auth/reset-password/:token`
 
-PATCH /users/:id — Edit user info
+### User Management
 
-PATCH /users/:id/role — Change user role
+* `GET /users`
+* `GET /users/:id`
+* `PATCH /users/:id` – edit name/email/role
+* `DELETE /users/:id`
+* `PATCH /users/:id/role` – admin only
+* `GET /users/me`
+* `PATCH /users/me`
 
-DELETE /users/:id
+### Profile & Avatar
 
-🛡️ Role-Based Access Control
-The app defines roles like admin and user Middleware ensures only authorized users can access sensitive routes and actions.
+* `POST /photos` – upload avatar
+* `GET /photos/:id` – get avatar
 
-🧪 Tests
-Testing is not yet implemented — you can contribute by adding tests using:
+---
 
-Jest / Supertest for backend
+## 🔐 Role & Permission System
 
-React Testing Library for frontend
+### Roles
 
-🤝 Contributing
-Pull requests are welcome! To contribute:
+* `admin`
+* `user`
 
-Fork the repo
+### Sample Permissions
 
-Create your branch: git checkout -b feature-name
+* `USERS_READ`
+* `USERS_UPDATE`
+* `USERS_PERM_UPDATE`
+* `USERS_INVITE`
 
-Commit your changes: git commit -am 'Add new feature'
+Each role is mapped to a set of permissions in `utils/permissions.js`. Permissions are checked using custom middleware `authPermissions()`.
 
-Push to the branch: git push origin feature-name
+---
 
-Open a pull request
+## 🧪 Future Improvements
 
-📜 License
-MIT License — you can use this project freely for learning and development.
+* Add unit/integration tests with Jest
+* Improve image storage (e.g., migrate to AWS S3)
+* Add rate-limiting for auth endpoints
+* Use refresh tokens for long-lived sessions
+* Better validation with `Joi` or `express-validator`
 
-🧑‍💻 Author
-Gevorg – GitHub Profile
+---
 
-📬 Feedback
-If you have suggestions or find bugs, feel free to open an issue or contact the author.
+## 👨‍💻 Author
+
+**Gevorg Torosyan**
+GitHub: [@gevv001](https://github.com/gevv001)
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
